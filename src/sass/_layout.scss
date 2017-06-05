@@ -42,10 +42,10 @@
                 text-decoration: line-through;
             }
         }
-    }
 
-    & + .todo-list-footer {
-        display: block;
+        & + .todo-list-footer {
+            display: block;
+        }
     }
 
     &.todo-list-filter-active {
