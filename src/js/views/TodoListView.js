@@ -41,8 +41,8 @@ export default (function () {
     }
 
     return {
-        getStaticContentOutput: getStaticContentOutput,
-        getTaskOutput: getTaskOutput,
-        getMessageOutput: getMessageOutput
+        getStaticContentOutput,
+        getTaskOutput,
+        getMessageOutput
     }
 })();

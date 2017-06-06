@@ -3,7 +3,7 @@ import DomUtilsJQuery from '../utils/DomUtilsJQuery';
 import DomUtilsVanilla from '../utils/DomUtilsVanilla';
 
 export default (function () {
-    var _domUtils;
+    let _domUtils;
 
     function initialize() {
         if (appConstants.engine == 'jQuery') {
@@ -58,17 +58,17 @@ export default (function () {
     }
 
     return {
-        initialize: initialize,
-        hasClass: hasClass,
-        addClass: addClass,
-        removeClass: removeClass,
-        getById: getById,
-        getByClass: getByClass,
-        create: create,
-        insertBefore: insertBefore,
-        setInnerHtml: setInnerHtml,
-        setOuterHtml: setOuterHtml,
-        addListener: addListener,
-        removeListener: removeListener
+        initialize,
+        hasClass,
+        addClass,
+        removeClass,
+        getById,
+        getByClass,
+        create,
+        insertBefore,
+        setInnerHtml,
+        setOuterHtml,
+        addListener,
+        removeListener
     }
 })();

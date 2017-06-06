@@ -8,7 +8,7 @@ export default (function () {
     }
 
     function removeClass(target, className) {
-        var rx = new RegExp('(' + className + ')?', 'g');
+        const rx = new RegExp('(' + className + ')?', 'g');
 
         target.className = target.className.replace(rx, '');
     }
@@ -18,7 +18,7 @@ export default (function () {
     }
 
     function getByClass(className, parent) {
-        var result = parent.getElementsByClassName(className);
+        const result = parent.getElementsByClassName(className);
 
         return result.length ? result[0] : null;
     }
@@ -28,7 +28,7 @@ export default (function () {
     }
 
     function insertBefore(itemToInsert, target) {
-        var parent = target.parentNode;
+        const parent = target.parentNode;
 
         parent.insertBefore(itemToInsert, target);
     }
@@ -50,16 +50,16 @@ export default (function () {
     }
 
     return {
-        hasClass: hasClass,
-        addClass: addClass,
-        removeClass: removeClass,
-        getById: getById,
-        getByClass: getByClass,
-        create: create,
-        insertBefore: insertBefore,
-        setInnerHtml: setInnerHtml,
-        setOuterHtml: setOuterHtml,
-        addListener: addListener,
-        removeListener: removeListener
+        hasClass,
+        addClass,
+        removeClass,
+        getById,
+        getByClass,
+        create,
+        insertBefore,
+        setInnerHtml,
+        setOuterHtml,
+        addListener,
+        removeListener
     }
 })();

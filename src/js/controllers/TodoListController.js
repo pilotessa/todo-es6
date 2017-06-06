@@ -6,7 +6,7 @@ import TaskService from '../services/TaskService';
 import TodoListView from '../views/TodoListView';
 
 export default (function () {
-    var $list,
+    let $list,
         $newValue,
         $footer,
         $batchUpdate,
@@ -35,7 +35,7 @@ export default (function () {
     }
 
     function renderStaticContent() {
-        var $wrapper = DomService.getById(appConstants.id);
+        const $wrapper = DomService.getById(appConstants.id);
 
         if (!$wrapper) {
             throw new Error("List container is missing");
@@ -59,7 +59,7 @@ export default (function () {
 
     function onTaskCreate(event) {
         if (event.keyCode == 13) {
-            var task = new Task();
+            const task = new Task();
 
             task.value = this.value;
             task.status = TaskStatusEnum.ACTIVE_TASK;
@@ -76,18 +76,15 @@ export default (function () {
     }
 
     function onTaskUpdate(event) {
-        var li,
-            task;
-
         if (DomService.hasClass(event.target, 'todo-list-item-check')) {
-            li = event.target.parentNode.parentNode.parentNode;
-            task = TaskService.getTask(li.id);
+            const li = event.target.parentNode.parentNode.parentNode,
+                task = TaskService.getTask(li.id);
 
             task.isChecked = !task.isChecked;
             TaskService.updateTask(task);
         } else if (DomService.hasClass(event.target, 'todo-list-item-mark-as-complete')) {
-            li = event.target.parentNode.parentNode;
-            task = TaskService.getTask(li.id);
+            const li = event.target.parentNode.parentNode,
+                task = TaskService.getTask(li.id);
 
             task.status = TaskStatusEnum.COMPLETED_TASK;
             TaskService.updateTask(task);
@@ -97,8 +94,8 @@ export default (function () {
                 renderMessage('The task is successfully updated.');
             }
         } else if (DomService.hasClass(event.target, 'todo-list-item-delete')) {
-            li = event.target.parentNode.parentNode;
-            task = TaskService.getTask(li.id);
+            const li = event.target.parentNode.parentNode,
+                task = TaskService.getTask(li.id);
 
             TaskService.deleteTask(task);
 
@@ -108,8 +105,8 @@ export default (function () {
                 renderMessage('The task is successfully deleted.');
             }
         } else if (DomService.hasClass(event.target, 'todo-list-item-mark-as-active')) {
-            li = event.target.parentNode.parentNode;
-            task = TaskService.getTask(li.id);
+            const li = event.target.parentNode.parentNode,
+                task = TaskService.getTask(li.id);
 
             task.status = TaskStatusEnum.ACTIVE_TASK;
             TaskService.updateTask(task);
@@ -122,17 +119,14 @@ export default (function () {
     }
 
     function onBatchUpdate() {
-        var action = this.value,
-            list = TaskService.getList(),
-            task;
+        const action = this.value,
+            list = TaskService.getList();
 
         switch (action) {
             case 'delete':
-                for (var i = 0; i < list.length; i++) {
-                    task = list[i];
-
+                for (let task of list) {
                     if (task.isChecked) {
-                        var li = DomService.getById(task.id);
+                        const li = DomService.getById(task.id);
 
                         TaskService.deleteTask(task);
 
@@ -142,9 +136,7 @@ export default (function () {
 
                 break;
             case 'complete':
-                for (var i = 0; i < list.length; i++) {
-                    task = list[i];
-
+                 for (let task of list) {
                     if (task.isChecked) {
                         task.status = TaskStatusEnum.COMPLETED_TASK;
                         task.isChecked = false;
@@ -156,9 +148,7 @@ export default (function () {
 
                 break;
             case 'active':
-                for (var i = 0; i < list.length; i++) {
-                    task = list[i];
-
+                 for (let task of list) {
                     if (task.isChecked) {
                         task.status = TaskStatusEnum.ACTIVE_TASK;
                         task.isChecked = false;
@@ -179,7 +169,7 @@ export default (function () {
     }
 
     function onListFilter(event) {
-        var filter = this.value;
+        const filter = this.value;
 
         if (filter) {
             window.location.hash = '#' + filter;
@@ -191,13 +181,13 @@ export default (function () {
     }
 
     function loadList() {
-        var list = TaskService.getList();
+        const list = TaskService.getList();
 
         renderList(list);
     }
 
     function filterList() {
-        var filter = window.location.hash.replace('#', '');
+        const filter = window.location.hash.replace('#', '');
 
         DomService.removeClass($list, 'todo-list-filter-active');
         DomService.removeClass($list, 'todo-list-filter-complete');
@@ -213,7 +203,7 @@ export default (function () {
     }
 
     function renderTask(task) {
-        var $li = DomService.getById(task.id);
+        let $li = DomService.getById(task.id);
 
         if (!$li) {
             $li = DomService.create('li');
@@ -227,17 +217,13 @@ export default (function () {
     }
 
     function renderMessage(message) {
-        var $message = DomService.create('div');
+        const $message = DomService.create('div');
 
         DomService.insertBefore($message, $list);
         DomService.setOuterHtml($message, TodoListView.getMessageOutput(message));
 
-        setTimeout(function () {
-            $('.alert').addClass('in');
-        });
-        setTimeout(function () {
-            $('.alert').alert('close');
-        }, 1200);
+        setTimeout(() => $('.alert').addClass('in'));
+        setTimeout(() => $('.alert').alert('close'), 1200);
     }
 
     function close() {
@@ -257,7 +243,7 @@ export default (function () {
     }
 
     return {
-        initialize: initialize,
-        close: close
+        initialize,
+        close
     }
 })();

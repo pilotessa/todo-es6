@@ -2,7 +2,7 @@ import appConstants from '../constants/appConstants';
 import TaskLocalStorage from '../dao/TaskLocalStorage';
 
 export default (function () {
-    var _isInitialized,
+    let _isInitialized,
         _storage,
         _data;
 
@@ -15,13 +15,13 @@ export default (function () {
             }
 
             _storage.readData(
-                function (data) {
+                data => {
                     _isInitialized = true;
                     _data = data;
 
                     onSuccess();
                 },
-                function (e) {
+                e => {
                     throw new Error(e.message);
                 }
             );
@@ -41,7 +41,7 @@ export default (function () {
             return;
         }
 
-        var i = _data.length;
+        const i = _data.length;
 
         _data[i] = task;
         _storage.updateData(_data);
@@ -54,9 +54,7 @@ export default (function () {
             return;
         }
 
-        for (var i = 0; i < _data.length; i++) {
-            var task = _data[i];
-
+         for (let task of _data) {
             if (task.id === id) {
                 return task;
             }
@@ -70,7 +68,7 @@ export default (function () {
             return;
         }
 
-        for (var i = 0; i < _data.length; i++) {
+        for (let i = 0; i < _data.length; i++) {
             if (_data[i].id === task.id) {
                 _data[i] = task;
                 _storage.updateData(_data);
@@ -87,7 +85,7 @@ export default (function () {
             return;
         }
 
-        for (var i = 0; i < _data.length; i++) {
+        for (let i = 0; i < _data.length; i++) {
             if (_data[i].id === task.id) {
                 _data.splice(i, 1);
                 _storage.updateData(_data);
@@ -100,11 +98,11 @@ export default (function () {
     }
 
     return {
-        initialize: initialize,
-        getList: getList,
-        createTask: createTask,
-        getTask: getTask,
-        updateTask: updateTask,
-        deleteTask: deleteTask
+        initialize,
+        getList,
+        createTask,
+        getTask,
+        updateTask,
+        deleteTask
     }
 })();

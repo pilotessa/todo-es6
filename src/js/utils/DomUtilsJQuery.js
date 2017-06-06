@@ -12,13 +12,13 @@ export default (function () {
     }
 
     function getById(id) {
-        var result  = $('#' + id);
+        const result  = $('#' + id);
 
         return result.length ? result[0] : null;
     }
 
     function getByClass(className, parent) {
-        var result = $(parent).find('.' + className);
+        const result = $(parent).find('.' + className);
 
         return result.length ? result[0] : null;
     }
@@ -48,16 +48,16 @@ export default (function () {
     }
 
     return {
-        hasClass: hasClass,
-        addClass: addClass,
-        removeClass: removeClass,
-        getById: getById,
-        getByClass: getByClass,
-        create: create,
-        insertBefore: insertBefore,
-        setInnerHtml: setInnerHtml,
-        setOuterHtml: setOuterHtml,
-        addListener: addListener,
-        removeListener: removeListener
+        hasClass,
+        addClass,
+        removeClass,
+        getById,
+        getByClass,
+        create,
+        insertBefore,
+        setInnerHtml,
+        setOuterHtml,
+        addListener,
+        removeListener
     }
 })();

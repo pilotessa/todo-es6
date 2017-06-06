@@ -1,23 +1,26 @@
 export default (function () {
-    var TaskStatus = function (code, label) {
-        this.code = code;
-        this.label = label;
-    };
+    class TaskStatus {
+        constructor(code, label) {
+            this.code = code;
+            this.label = label;
+        }
+    }
 
-    var ACTIVE_TASK = new TaskStatus('ACTIVE_TASK', 'Active');
-    var COMPLETED_TASK = new TaskStatus('COMPLETED_TASK', 'Completed');
+    const codes = new Map();
+    codes.set('ACTIVE_TASK', new TaskStatus('ACTIVE_TASK', 'Active'));
+    codes.set('COMPLETED_TASK', new TaskStatus('COMPLETED_TASK', 'Completed'));
 
     function getByCode(code) {
-        if (code in this) {
-            return this[code];
+        if (codes.has(code)) {
+            return codes.get(code);
         } else {
             throw new Error("Task Code is not found");
         }
     }
 
     return {
-        ACTIVE_TASK: ACTIVE_TASK,
-        COMPLETED_TASK: COMPLETED_TASK,
-        getByCode: getByCode
+        ACTIVE_TASK: getByCode('ACTIVE_TASK'),
+        COMPLETED_TASK: getByCode('COMPLETED_TASK'),
+        getByCode
     }
 })();
