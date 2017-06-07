@@ -21,24 +21,28 @@ export default (function () {
 
         // Init services
         DomService.initialize();
-        TaskService.initialize(onTaskServiceInitialize);
-    }
+        TaskService.initialize()
+        .then(
+            () => {
+                if (!$list) {
+                    renderStaticContent(appConstants.id);
+                    initStaticContentListeners();
+                }
 
-    function onTaskServiceInitialize() {
-        if (!$list) {
-            renderStaticContent(appConstants.id);
-            initStaticContentListeners();
-        }
-
-        loadList();
-        filterList();
+                loadList();
+                filterList();
+            },
+            reason => {
+                throw new Error(reason);
+            }
+        );
     }
 
     function renderStaticContent() {
         const $wrapper = DomService.getById(appConstants.id);
 
         if (!$wrapper) {
-            throw new Error("List container is missing");
+            throw new Error('List container is missing');
         }
 
         DomService.setInnerHtml($wrapper, TodoListView.getStaticContentOutput());
@@ -64,14 +68,23 @@ export default (function () {
             task.value = this.value;
             task.status = TaskStatusEnum.ACTIVE_TASK;
             task.isChecked = false;
-            task.id = TaskService.createTask(task);
+            TaskService.createTask(task)
+            .then(
+                (id) => {
+                    task.id = id;
 
-            renderTask(task);
-            if (canRenderMessage()) {
-                renderMessage('The task is successfully created.');
-            }
+                    renderTask(task);
 
-            $newValue.value = '';
+                    if (canRenderMessage()) {
+                        renderMessage('The task is successfully created.');
+                    }
+
+                    $newValue.value = '';
+                },
+                reason => {
+                    throw new Error(reason);
+                }
+            );
         }
     }
 
@@ -87,34 +100,54 @@ export default (function () {
                 task = TaskService.getTask(li.id);
 
             task.status = TaskStatusEnum.COMPLETED_TASK;
-            TaskService.updateTask(task);
+            TaskService.updateTask(task)
+            .then(
+                () => {
+                    renderTask(task);
 
-            renderTask(task);
-            if (canRenderMessage()) {
-                renderMessage('The task is successfully updated.');
-            }
+                    if (canRenderMessage()) {
+                        renderMessage('The task is successfully updated.');
+                    }
+                },
+                reason => {
+                    throw new Error(reason);
+                }
+            );
         } else if (DomService.hasClass(event.target, 'todo-list-item-delete')) {
             const li = event.target.parentNode.parentNode,
                 task = TaskService.getTask(li.id);
 
-            TaskService.deleteTask(task);
+            TaskService.deleteTask(task)
+            .then(
+                () => {
+                    $list.removeChild(li);
 
-            $list.removeChild(li);
-
-            if (canRenderMessage()) {
-                renderMessage('The task is successfully deleted.');
-            }
+                    if (canRenderMessage()) {
+                        renderMessage('The task is successfully deleted.');
+                    }
+                },
+                reason => {
+                    throw new Error(reason);
+                }
+            );
         } else if (DomService.hasClass(event.target, 'todo-list-item-mark-as-active')) {
             const li = event.target.parentNode.parentNode,
                 task = TaskService.getTask(li.id);
 
             task.status = TaskStatusEnum.ACTIVE_TASK;
-            TaskService.updateTask(task);
+            TaskService.updateTask(task)
+            .then(
+                () => {
+                    renderTask(task);
 
-            renderTask(task);
-            if (canRenderMessage()) {
-                renderMessage('The task is successfully updated.');
-            }
+                    if (canRenderMessage()) {
+                        renderMessage('The task is successfully updated.');
+                    }
+                },
+                reason => {
+                    throw new Error(reason);
+                }
+            );
         }
     }
 
@@ -128,9 +161,13 @@ export default (function () {
                     if (task.isChecked) {
                         const li = DomService.getById(task.id);
 
-                        TaskService.deleteTask(task);
-
-                        $list.removeChild(li);
+                        TaskService.deleteTask(task)
+                        .then(
+                            () => $list.removeChild(li),
+                            reason => {
+                                throw new Error(reason);
+                            }
+                        );
                     }
                 }
 
@@ -140,9 +177,13 @@ export default (function () {
                     if (task.isChecked) {
                         task.status = TaskStatusEnum.COMPLETED_TASK;
                         task.isChecked = false;
-                        TaskService.updateTask(task);
-
-                        renderTask(task);
+                        TaskService.updateTask(task)
+                        .then(
+                            () => renderTask(task),
+                            reason => {
+                                throw new Error(reason);
+                            }
+                        );
                     }
                 }
 
@@ -152,9 +193,13 @@ export default (function () {
                     if (task.isChecked) {
                         task.status = TaskStatusEnum.ACTIVE_TASK;
                         task.isChecked = false;
-                        TaskService.updateTask(task);
-
-                        renderTask(task);
+                        TaskService.updateTask(task)
+                        .then(
+                            () => renderTask(task),
+                            reason => {
+                                throw new Error(reason);
+                            }
+                        );
                     }
                 }
 

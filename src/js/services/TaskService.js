@@ -6,52 +6,57 @@ export default (function () {
         _storage,
         _data;
 
-    function initialize(onSuccess) {
-        if (!_isInitialized) {
-            if (appConstants.storage == 'serverApi') {
-                _storage = TaskServerApi;
-            } else {
-                _storage = TaskLocalStorage;
+    function initialize() {
+        return new Promise ((resolve, reject) => {
+            if (!_isInitialized) {
+                if (appConstants.storage == 'serverApi') {
+                    _storage = TaskServerApi;
+                } else {
+                    _storage = TaskLocalStorage;
+                }
+
+                _storage.readData()
+                .then (
+                    data => {
+                        _isInitialized = true;
+                        _data = data;
+                    },
+                    reason => reject(reason)
+                );
             }
 
-            _storage.readData(
-                data => {
-                    _isInitialized = true;
-                    _data = data;
-
-                    onSuccess();
-                },
-                e => {
-                    throw new Error(e.message);
-                }
-            );
-        }
+            resolve();
+        });
     }
 
     function getList() {
         if (!_isInitialized) {
-            return;
+            throw new Error('List is not initialized');
         }
 
         return _data.slice(0);
     }
 
     function createTask(task) {
-        if (!_isInitialized) {
-            return;
-        }
+        return new Promise ((resolve, reject) => {
+            if (!_isInitialized) {
+                reject('List is not initialized');
+            }
 
-        const i = _data.length;
+            const i = _data.length;
 
-        _data[i] = task;
-        _storage.updateData(_data);
-
-        return _data[i].id;
+            _data[i] = task;
+            _storage.updateData(_data).
+            then(
+                () => resolve(_data[i].id),
+                reason => reject(reason)
+            );
+        });
     }
 
     function getTask(id) {
         if (!_isInitialized) {
-            return;
+            throw new Error('List is not initialized');
         }
 
          for (let task of _data) {
@@ -64,37 +69,39 @@ export default (function () {
     }
 
     function updateTask(task) {
-        if (!_isInitialized) {
-            return;
-        }
-
-        for (let i = 0; i < _data.length; i++) {
-            if (_data[i].id === task.id) {
-                _data[i] = task;
-                _storage.updateData(_data);
-
-                return true;
+        return new Promise ((resolve, reject) => {
+            if (!_isInitialized) {
+                reject('List is not initialized');
             }
-        }
 
-        return false;
+            for (let i = 0; i < _data.length; i++) {
+                if (_data[i].id === task.id) {
+                    _data[i] = task;
+
+                    resolve(_storage.updateData(_data));
+                }
+            }
+
+            reject('Task is not found');
+        });
     }
 
     function deleteTask(task) {
-        if (!_isInitialized) {
-            return;
-        }
-
-        for (let i = 0; i < _data.length; i++) {
-            if (_data[i].id === task.id) {
-                _data.splice(i, 1);
-                _storage.updateData(_data);
-
-                return true;
+        return new Promise ((resolve, reject) => {
+            if (!_isInitialized) {
+                reject('List is not initialized');
             }
-        }
 
-        return false;
+            for (let i = 0; i < _data.length; i++) {
+                if (_data[i].id === task.id) {
+                    _data.splice(i, 1);
+
+                    resolve(_storage.updateData(_data));
+                }
+            }
+
+            reject('Task is not found');
+        });
     }
 
     return {
