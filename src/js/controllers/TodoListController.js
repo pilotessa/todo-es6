@@ -157,50 +157,44 @@ export default (function () {
 
         switch (action) {
             case 'delete':
-                for (let task of list) {
-                    if (task.isChecked) {
-                        const li = DomService.getById(task.id);
+                for (let task of list.filter((task) => task.isChecked)) {
+                    const li = DomService.getById(task.id);
 
-                        TaskService.deleteTask(task)
-                        .then(
-                            () => $list.removeChild(li),
-                            reason => {
-                                throw new Error(reason);
-                            }
-                        );
-                    }
+                    TaskService.deleteTask(task)
+                    .then(
+                        () => $list.removeChild(li),
+                        reason => {
+                            throw new Error(reason);
+                        }
+                    );
                 }
 
                 break;
             case 'complete':
-                 for (let task of list) {
-                    if (task.isChecked) {
-                        task.status = TaskStatusEnum.COMPLETED_TASK;
-                        task.isChecked = false;
-                        TaskService.updateTask(task)
-                        .then(
-                            () => renderTask(task),
-                            reason => {
-                                throw new Error(reason);
-                            }
-                        );
-                    }
+                 for (let task of list.filter((task) => task.isChecked)) {
+                    task.status = TaskStatusEnum.COMPLETED_TASK;
+                    task.isChecked = false;
+                    TaskService.updateTask(task)
+                    .then(
+                        () => renderTask(task),
+                        reason => {
+                            throw new Error(reason);
+                        }
+                    );
                 }
 
                 break;
             case 'active':
-                 for (let task of list) {
-                    if (task.isChecked) {
-                        task.status = TaskStatusEnum.ACTIVE_TASK;
-                        task.isChecked = false;
-                        TaskService.updateTask(task)
-                        .then(
-                            () => renderTask(task),
-                            reason => {
-                                throw new Error(reason);
-                            }
-                        );
-                    }
+                 for (let task of list.filter((task) => task.isChecked)) {
+                    task.status = TaskStatusEnum.ACTIVE_TASK;
+                    task.isChecked = false;
+                    TaskService.updateTask(task)
+                    .then(
+                        () => renderTask(task),
+                        reason => {
+                            throw new Error(reason);
+                        }
+                    );
                 }
 
                 break;
