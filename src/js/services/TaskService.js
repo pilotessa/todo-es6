@@ -59,7 +59,7 @@ export default (function () {
             throw new Error('List is not initialized');
         }
 
-        return _.find(_data, (task) => task.id === id);
+        return _data.find(task => task.id === id);
     }
 
     function updateTask(task) {
@@ -68,7 +68,7 @@ export default (function () {
                 reject('List is not initialized');
             }
 
-            if (_.indexOf(_data, task) > -1) {
+            if (_data.indexOf(task) > -1) {
                 resolve(_storage.updateData(_data));
             } else {
                 reject('Task is not found');
@@ -82,9 +82,8 @@ export default (function () {
                 reject('List is not initialized');
             }
 
-            const i = _.indexOf(_data, task);
-            if (i > -1) {
-                _data.splice(i, 1);
+            if (_data.indexOf(task) > -1) {
+                _.pull(_data, task);
 
                 resolve(_storage.updateData(_data));
             } else {

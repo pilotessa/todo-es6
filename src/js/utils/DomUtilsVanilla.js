@@ -23,6 +23,10 @@ export default (function () {
         return result.length ? result[0] : null;
     }
 
+    function getParent(target) {
+        return target.parentNode || null;
+    }
+
     function create(tag) {
         return document.createElement(tag);
     }
@@ -55,6 +59,7 @@ export default (function () {
         removeClass,
         getById,
         getByClass,
+        getParent,
         create,
         insertBefore,
         setInnerHtml,

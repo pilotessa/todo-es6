@@ -90,14 +90,14 @@ export default (function () {
 
     function onTaskUpdate(event) {
         if (DomService.hasClass(event.target, 'todo-list-item-check')) {
-            const li = event.target.parentNode.parentNode.parentNode,
-                task = TaskService.getTask(li.id);
+            const $li = DomService.getAncestor(event.target, 3),
+                task = DomService.getAssignedData($li);
 
             task.isChecked = !task.isChecked;
             TaskService.updateTask(task);
         } else if (DomService.hasClass(event.target, 'todo-list-item-mark-as-complete')) {
-            const li = event.target.parentNode.parentNode,
-                task = TaskService.getTask(li.id);
+            const $li = DomService.getAncestor(event.target, 2),
+                task = DomService.getAssignedData($li);
 
             task.status = TaskStatusEnum.COMPLETED_TASK;
             TaskService.updateTask(task)
@@ -113,26 +113,9 @@ export default (function () {
                     throw new Error(reason);
                 }
             );
-        } else if (DomService.hasClass(event.target, 'todo-list-item-delete')) {
-            const li = event.target.parentNode.parentNode,
-                task = TaskService.getTask(li.id);
-
-            TaskService.deleteTask(task)
-            .then(
-                () => {
-                    $list.removeChild(li);
-
-                    if (canRenderMessage()) {
-                        renderMessage('The task is successfully deleted.');
-                    }
-                },
-                reason => {
-                    throw new Error(reason);
-                }
-            );
         } else if (DomService.hasClass(event.target, 'todo-list-item-mark-as-active')) {
-            const li = event.target.parentNode.parentNode,
-                task = TaskService.getTask(li.id);
+            const $li = DomService.getAncestor(event.target, 2),
+                task = DomService.getAssignedData($li);
 
             task.status = TaskStatusEnum.ACTIVE_TASK;
             TaskService.updateTask(task)
@@ -148,6 +131,23 @@ export default (function () {
                     throw new Error(reason);
                 }
             );
+        } else if (DomService.hasClass(event.target, 'todo-list-item-delete')) {
+            const $li = DomService.getAncestor(event.target, 2),
+                task = DomService.getAssignedData($li);
+
+            TaskService.deleteTask(task)
+            .then(
+                () => {
+                    $list.removeChild($li);
+
+                    if (canRenderMessage()) {
+                        renderMessage('The task is successfully deleted.');
+                    }
+                },
+                reason => {
+                    throw new Error(reason);
+                }
+            );
         }
     }
 
@@ -157,12 +157,12 @@ export default (function () {
 
         switch (action) {
             case 'delete':
-                for (let task of list.filter((task) => task.isChecked)) {
-                    const li = DomService.getById(task.id);
+                for (let task of list.filter(task => task.isChecked)) {
+                    const $li = DomService.getById(task.id);
 
                     TaskService.deleteTask(task)
                     .then(
-                        () => $list.removeChild(li),
+                        () => $list.removeChild($li),
                         reason => {
                             throw new Error(reason);
                         }
@@ -171,7 +171,7 @@ export default (function () {
 
                 break;
             case 'complete':
-                 for (let task of list.filter((task) => task.isChecked)) {
+                 for (let task of list.filter(task => task.isChecked)) {
                     task.status = TaskStatusEnum.COMPLETED_TASK;
                     task.isChecked = false;
                     TaskService.updateTask(task)
@@ -185,7 +185,7 @@ export default (function () {
 
                 break;
             case 'active':
-                 for (let task of list.filter((task) => task.isChecked)) {
+                 for (let task of list.filter(task => task.isChecked)) {
                     task.status = TaskStatusEnum.ACTIVE_TASK;
                     task.isChecked = false;
                     TaskService.updateTask(task)
@@ -242,13 +242,17 @@ export default (function () {
     }
 
     function renderTask(task) {
-        let $li = DomService.getById(task.id);
+        let $li = DomService.getById(task.id),
+            $liUpdated;
 
         if (!$li) {
             $li = DomService.create('li');
             DomService.insertBefore($li, $footer);
         }
         DomService.setOuterHtml($li, TodoListView.getTaskOutput(task));
+
+        $liUpdated = DomService.getById(task.id);
+        DomService.assignData($liUpdated, task);
     }
 
     function canRenderMessage() {

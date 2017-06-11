@@ -23,6 +23,12 @@ export default (function () {
         return result.length ? result[0] : null;
     }
 
+    function getParent(target) {
+        const result = $(target).parent();
+
+        return result.length ? result[0] : null;
+    }
+
     function create(tag) {
         return $('<' + tag + '></' + tag + '>')[0];
     }
@@ -53,6 +59,7 @@ export default (function () {
         removeClass,
         getById,
         getByClass,
+        getParent,
         create,
         insertBefore,
         setInnerHtml,

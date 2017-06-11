@@ -3,6 +3,7 @@ import DomUtilsJQuery from '../utils/DomUtilsJQuery';
 import DomUtilsVanilla from '../utils/DomUtilsVanilla';
 
 export default (function () {
+    const _data = new WeakMap();
     let _domUtils;
 
     function initialize() {
@@ -33,6 +34,24 @@ export default (function () {
         return _domUtils.getByClass(className, parent);
     }
 
+    function getParent(target) {
+        return _domUtils.getParent(target);
+    }
+
+    function getAncestor(target, level) {
+        let a = target;
+
+        for (let i = 1; i <= level; i++) {
+            a = _domUtils.getParent(a);
+
+            if (!a) {
+                return null;
+            }
+        }
+
+        return a;
+    }
+
     function create(tag) {
         return _domUtils.create(tag);
     }
@@ -57,6 +76,14 @@ export default (function () {
         _domUtils.removeListener(target, eventName, handler);
     }
 
+    function assignData($li, task) {
+        _data.set($li, task);
+    }
+
+    function getAssignedData($li) {
+        return _data.get($li);
+    }
+
     return {
         initialize,
         hasClass,
@@ -64,11 +91,15 @@ export default (function () {
         removeClass,
         getById,
         getByClass,
+        getParent,
+        getAncestor,
         create,
         insertBefore,
         setInnerHtml,
         setOuterHtml,
         addListener,
-        removeListener
+        removeListener,
+        assignData,
+        getAssignedData
     }
 })();
