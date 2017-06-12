@@ -32,14 +32,6 @@ gulp.task('clean', function () {
     return gulp.src(ROOT_ASSETS_DIR, {read: false}).pipe(clean());
 });
 
-// Styles
-gulp.task('copy-vendor-styles', function() {
-    gulp.src('./node_modules/bootstrap/dist/fonts/**/*.*')
-        .pipe(gulp.dest(ROOT_ASSETS_DIR + '/fonts'));
-    gulp.src('./node_modules/bootstrap/dist/css/bootstrap.min.css')
-        .pipe(gulp.dest(ROOT_ASSETS_DIR_CSS));
-});
-
 gulp.task('build-styles', function () {
     return sass(ROOT_DIR_SASS + '/main.scss', {style: 'expanded', sourcemap: isDev})
         .pipe(gulpif(isDev, rename({basename: 'app'})))
@@ -73,7 +65,6 @@ var injectResources = function () {
     return gulp.src(ROOT_DIR + '/*html.tmpl')
         .pipe(inject(gulp.src(
             [
-                ROOT_ASSETS_DIR_CSS + '/bootstrap.min.css',
                 ROOT_ASSETS_DIR_CSS + '/app*.css'
             ], {read: false}), {
             name: 'app'
@@ -94,5 +85,5 @@ gulp.task('watch-handler', function () {
     return buildJsDev();
 });
 
-gulp.task('build', gulpSequence('clean', 'copy-vendor-styles', 'build-styles', 'build-js-prod', 'inject-resources'));
-gulp.task('watch', gulpSequence('clean', 'set-dev-configs', 'copy-vendor-styles', 'build-styles', 'watch-handler'));
+gulp.task('build', gulpSequence('clean', 'build-styles', 'build-js-prod', 'inject-resources'));
+gulp.task('watch', gulpSequence('clean', 'set-dev-configs', 'build-styles', 'watch-handler'));
