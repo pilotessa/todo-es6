@@ -4,7 +4,7 @@ import Task from '../models/Task';
 export default (function () {
     const TASKS_KEY = localStorageConstants.TASK_LIST;
 
-    function readData(onSuccess, onError) {
+    function readData() {
         return new Promise ((resolve, reject) => {
             try {
                 const taskListStringified = localStorage.getItem(TASKS_KEY) || "[]",
@@ -19,7 +19,7 @@ export default (function () {
         });
     }
 
-    function updateData(data, onSuccess, onError) {
+    function updateData(data) {
         return new Promise ((resolve, reject) => {
             try {
                 const taskListJson = data.map(task => {
